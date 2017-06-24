@@ -14,33 +14,34 @@ public class Main {
 
         FileDetails fileDetails = readFile(scrn);
         HuffmanCompressor huffmanCompressor = new HuffmanCompressor(fileDetails.fileContents);
-        boolean[][] encoded = huffmanCompressor.encode();
         File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
-        writeToEncodedFile(encodedFile, encoded);
+        boolean[][] encoded = huffmanCompressor.encode();
+        writeEncodedFile(encodedFile, encoded);
     }
 
-    private static void writeToEncodedFile(File file, boolean[][] content) {
-
+    private static void writeEncodedFile(File file, boolean[][] content) {
 
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file.getAbsoluteFile()));
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(file.getAbsoluteFile()));
 
             for (int i = 0; i < content.length; i++) {
-                BitSet toBeStored = new BitSet(content[i].length);
 
-                for (int j = 0; j < content[i].length; j++) {
-                    if (content[i][j]) {
-                        toBeStored.set(j);
-                    }
+                boolean[] current = content[i];
+                byte[] converted = Utils.bits2bytes(current);
+                for (int j = 0; j < converted.length; j++) {
+                    dos.writeByte(converted[j]);
                 }
+                dos.writeByte(-1);
 
-                oos.writeObject(toBeStored);
-                oos.writeObject(-1);
             }
 
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private static String getEncodedFileName(String parentFile) {
@@ -48,7 +49,6 @@ public class Main {
         sb.append("/Encoded.txt");
         return sb.toString();
     }
-
 
     private static File createFile(String fileName) {
         File file = new File(fileName);
@@ -95,12 +95,6 @@ public class Main {
         return retVal;
     }
 
-    private static class FileDetails {
-        String fileContents;
-        String filePath;
-
-    }
-
     private static void display(boolean[][] encoded) {
         for (int i = 0; i < encoded.length; i++) {
             for (int j = 0; j < encoded[i].length; j++) {
@@ -110,22 +104,4 @@ public class Main {
         }
     }
 
-    private static void readEncodedFiles(String fileName) {
-//        try {
-//            DataInputStream dis = new DataInputStream(new FileInputStream(fileName));
-//
-//            while (dis.available() > 0) {
-//                System.out.println(dis.readBoolean());
-//                dis.
-//                        dis.close();
-//            }
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-
-    }
 }
