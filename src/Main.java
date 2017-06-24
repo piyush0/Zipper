@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Scanner;
 
@@ -17,6 +18,35 @@ public class Main {
         File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
         boolean[][] encoded = huffmanCompressor.encode();
         writeEncodedFile(encodedFile, encoded);
+        readEncodedFile(encodedFile);
+    }
+
+    private static void readEncodedFile(File file) {
+
+        try {
+            DataInputStream dis = new DataInputStream(new FileInputStream(file.getAbsoluteFile()));
+
+
+
+            while (dis.available() > 0) {
+
+                ArrayList<Byte> bytes = new ArrayList<>();
+
+                byte current = dis.readByte();
+                while (current != -1) {
+                    bytes.add(current);
+                    current = dis.readByte();
+                }
+                Utils.bytes2bites(bytes); // TODO
+
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static void writeEncodedFile(File file, boolean[][] content) {

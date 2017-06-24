@@ -30,7 +30,6 @@ public class BinaryTree {
     }
 
     public void traversal(HashMap<Character, String> encoder, HashMap<String, Character> decoder) {
-
         traversal(encoder, decoder, "", this.root);
 
     }

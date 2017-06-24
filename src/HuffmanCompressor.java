@@ -16,6 +16,7 @@ public class HuffmanCompressor {
     HuffmanCompressor(String source) {
         setFreqMap(source);
         createMinHeap();
+
         reduceMinHeap();
         createEnoderDecoder();
     }
@@ -76,6 +77,31 @@ public class HuffmanCompressor {
         this.decoder = new HashMap<>();
         BinaryTree finalTree = this.minHeap.poll().binaryTree;
         finalTree.traversal(this.encoder, this.decoder);
+    }
+
+    public int getMin() {
+        int min = Integer.MAX_VALUE;
+        Set<Character> allChars = this.freqMap.keySet();
+
+        for (Character ch : allChars) {
+            String enc = this.encoder.get(ch);
+
+            int twoPower = 1;
+            int chk = 0;
+            for (int i = enc.length() - 1; i >= 0; i--) {
+                if (enc.charAt(i) == '1') {
+                    chk += twoPower;
+                }
+                twoPower *= 2;
+            }
+            System.out.println(chk);
+            if (chk < min) {
+                min = chk;
+            }
+
+        }
+
+        return min;
     }
 
     public boolean[][] encode() {
