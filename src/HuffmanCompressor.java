@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -75,5 +76,23 @@ public class HuffmanCompressor {
         this.decoder = new HashMap<>();
         BinaryTree finalTree = this.minHeap.poll().binaryTree;
         finalTree.traversal(this.encoder, this.decoder);
+    }
+
+    public boolean[][] encode() {
+        Set<Character> allChars = this.encoder.keySet();
+        boolean[][] retVal = new boolean[allChars.size()][];
+
+        int i = 0;
+        for (Character ch : allChars) {
+            String val = encoder.get(ch);
+
+            retVal[i] = new boolean[val.length()];
+            for (int j = 0; j < val.length(); j++) {
+                retVal[i][j] = val.charAt(j) != '0';
+            }
+            i++;
+        }
+
+        return retVal;
     }
 }
