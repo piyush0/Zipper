@@ -31,25 +31,48 @@ public class BinaryTree {
 
     public void traversal(HashMap<Character, String> encoder, HashMap<String, Character> decoder) {
 
-        StringBuilder sb = new StringBuilder();
-        traversal(encoder, decoder, sb, this.root);
+        traversal(encoder, decoder, "", this.root);
 
     }
 
-    private void traversal(HashMap<Character, String> encoder, HashMap<String, Character> decoder, StringBuilder osf, Node node) {
+    public String toString() {
+        return this.toString(this.root);
+    }
+
+    private String toString(Node node) {
+        if (node == null) {
+            return "";
+        }
+
+        String retVal = "";
+
+        if (node.left != null) {
+            retVal += node.left.data + " => ";
+        }
+        retVal += node.data;
+        if (node.right != null) {
+            retVal += " <= " + node.right.data;
+        }
+        retVal += "\n";
+        retVal += toString(node.left);
+        retVal += toString(node.right);
+        return retVal;
+    }
+
+    private void traversal(HashMap<Character, String> encoder, HashMap<String, Character> decoder, String osf, Node node) {
 
         if (node == null) {
             return;
         }
 
-        traversal(encoder, decoder, osf.append("0"), node.left);
+        traversal(encoder, decoder, osf + "0", node.left);
 
         if (node.left == null && node.right == null) {
-            encoder.put(node.data, osf.toString());
-            decoder.put(osf.toString(), node.data);
+            encoder.put(node.data, osf);
+            decoder.put(osf, node.data);
         }
 
-        traversal(encoder, decoder, osf.append("1"), node.right);
+        traversal(encoder, decoder, osf + "1", node.right);
 
     }
 }

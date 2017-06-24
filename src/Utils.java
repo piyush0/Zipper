@@ -9,6 +9,7 @@ public class Utils {
         }
     }
 
+
     public static byte[] bits2bytes(boolean[] arr) {
 
         byte[] retVal = new byte[((arr.length) / 7) + 1];
@@ -28,7 +29,7 @@ public class Utils {
         byte retVal = 0;
         int twoPower = 1;
 
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 1; i < arr.length; i++) {
             if (arr[i]) {
                 retVal += twoPower;
             }

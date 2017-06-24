@@ -25,15 +25,15 @@ public class Main {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(file.getAbsoluteFile()));
 
             for (int i = 0; i < content.length; i++) {
-
                 boolean[] current = content[i];
                 byte[] converted = Utils.bits2bytes(current);
                 for (int j = 0; j < converted.length; j++) {
                     dos.writeByte(converted[j]);
                 }
                 dos.writeByte(-1);
-
             }
+
+            dos.close();
 
 
         } catch (FileNotFoundException e) {
