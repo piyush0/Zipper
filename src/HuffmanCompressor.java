@@ -147,5 +147,28 @@ public class HuffmanCompressor {
         return sb.toString();
     }
 
+    public int getMinimumVal() {
+
+        Set<String> allStrings = decoder.keySet();
+        int min = Integer.MAX_VALUE;
+        for (String s : allStrings) {
+            int twoPower = 1;
+            int comparer = 0;
+
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == '1') {
+                    comparer += twoPower;
+                }
+                twoPower *= 2;
+            }
+
+            if (comparer < min) {
+                min = comparer;
+            }
+        }
+        return min;
+
+    }
+
 
 }
