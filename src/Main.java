@@ -15,7 +15,7 @@ public class Main {
         Scanner scrn = new Scanner(System.in);
 
         HuffmanCompressor huffmanCompressor = new HuffmanCompressor(readRelativeFile("Source.txt"));
-        System.out.println(huffmanCompressor.getEncoder());
+
         System.out.println("0 for encoding/1 for decoding");
         int choice = scrn.nextInt();
         scrn.nextLine();
@@ -24,7 +24,7 @@ public class Main {
             String filePath = scrn.nextLine();
             File file = new File(filePath);
             String fileContents = readFile(file);
-            File encodedFile = createFileAt(file.getParent(), "encoded");
+
 
             ArrayList<Boolean> encoded = null;
             try {
@@ -32,6 +32,7 @@ public class Main {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            File encodedFile = createFileAt(file.getParent(), "encoded");
             writeEncodedFile(encodedFile, encoded);
         } else {
             System.out.println("Enter the path of compressed file");
@@ -57,11 +58,8 @@ public class Main {
                 bytes.add(dis.readByte());
             }
 
-            ArrayList<Boolean> retVal = Utils.bytes2bit(bytes);
-            return retVal;
+            return Utils.bytes2bit(bytes);
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,9 +90,6 @@ public class Main {
 
             dos.close();
 
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
