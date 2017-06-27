@@ -104,21 +104,46 @@ public class HuffmanCompressor {
         return min;
     }
 
-    public boolean[][] encode() {
-        Set<Character> allChars = this.encoder.keySet();
-        boolean[][] retVal = new boolean[allChars.size()][];
+    public boolean[][] encode(String str) {
+
+        boolean[][] retVal = new boolean[str.length()][];
 
         int i = 0;
-        for (Character ch : allChars) {
+        for (int u = 0; u < str.length(); u++) {
+            char ch = str.charAt(u);
             String val = encoder.get(ch);
 
             retVal[i] = new boolean[val.length()];
             for (int j = 0; j < val.length(); j++) {
+
                 retVal[i][j] = val.charAt(j) != '0';
             }
+
             i++;
         }
 
         return retVal;
+    }
+
+    public String decode(boolean[][] arr) {
+        StringBuilder sb = new StringBuilder();
+
+
+        for (int i = 0; i < arr.length; i++) {
+            boolean[] current = arr[i];
+            StringBuilder curr = new StringBuilder();
+
+            for (int j = 0; j < current.length; j++) {
+                if (current[j]) {
+                    curr.append("1");
+                } else {
+                    curr.append("0");
+                }
+            }
+            char decodedChar = decoder.get(curr.toString());
+            sb.append(decodedChar);
+        }
+
+        return sb.toString();
     }
 }

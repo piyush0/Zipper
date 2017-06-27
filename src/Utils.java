@@ -10,15 +10,43 @@ public class Utils {
         }
     }
 
-    public static boolean[] bytes2bites(ArrayList<Byte> bytes){
-        System.out.println(bytes);
-        return null;
+    public static ArrayList<Boolean> bytes2bites(ArrayList<Byte> bytes) {
+        ArrayList<Boolean> retVal = new ArrayList<>();
+
+        for (int i = 0; i < bytes.size() - 1; i++) {
+            byte curr = bytes.get(i);
+            while (curr != 0) {
+                int rem = curr % 2;
+                curr = (byte) (curr / 2);
+                if (rem == 1) {
+                    retVal.add(true);
+                } else {
+                    retVal.add(false);
+                }
+            }
+        }
+
+        for (int i = 0; i < (bytes.get(bytes.size() - 1)); i++) {
+            retVal.add(false);
+        }
+
+
+
+        return retVal;
     }
 
 
     public static byte[] bits2bytes(boolean[] arr) {
 
-        byte[] retVal = new byte[((arr.length) / 7) + 1];
+        byte leadingZeroes = 0;
+        int ei = arr.length - 1;
+        while (ei >= 0 && !arr[ei]) {
+            ei--;
+            leadingZeroes++;
+        }
+
+
+        byte[] retVal = new byte[((arr.length) / 7) + 2];
         for (int i = 0; i < retVal.length; i++) {
             boolean[] current = new boolean[7];
             for (int j = 0; i * 7 + j < arr.length && j < 7; j++) {
@@ -27,6 +55,8 @@ public class Utils {
             retVal[i] = bits2byte(current);
 
         }
+
+        retVal[retVal.length - 1] = leadingZeroes;
         return retVal;
     }
 
@@ -43,8 +73,9 @@ public class Utils {
             twoPower *= 2;
         }
 
-
         return retVal;
 
     }
+
+
 }

@@ -16,17 +16,20 @@ public class Main {
         FileDetails fileDetails = readFile(scrn);
         HuffmanCompressor huffmanCompressor = new HuffmanCompressor(fileDetails.fileContents);
         File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
-        boolean[][] encoded = huffmanCompressor.encode();
+
+        boolean[][] encoded = huffmanCompressor.encode(fileDetails.fileContents);
         writeEncodedFile(encodedFile, encoded);
-        readEncodedFile(encodedFile);
+
+        boolean[][] decoded = readEncodedFile(encodedFile);
+        System.out.println(huffmanCompressor.decode(decoded));
     }
 
-    private static void readEncodedFile(File file) {
+    private static boolean[][] readEncodedFile(File file) {
 
         try {
             DataInputStream dis = new DataInputStream(new FileInputStream(file.getAbsoluteFile()));
 
-
+            ArrayList<ArrayList<Boolean>> retVal = new ArrayList<>();
 
             while (dis.available() > 0) {
 
@@ -37,9 +40,12 @@ public class Main {
                     bytes.add(current);
                     current = dis.readByte();
                 }
-                Utils.bytes2bites(bytes); // TODO
 
+
+                ArrayList<Boolean> arr = Utils.bytes2bites(bytes);
+                retVal.add(arr);
             }
+            return arrayToList(retVal);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -47,6 +53,21 @@ public class Main {
             e.printStackTrace();
         }
 
+        return null;
+
+    }
+
+    private static boolean[][] arrayToList(ArrayList<ArrayList<Boolean>> arr) {
+        boolean[][] retVal = new boolean[arr.size()][];
+        for (int i = 0; i < arr.size(); i++) {
+            retVal[i] = new boolean[arr.get(i).size()];
+            for (int j = 0; j < arr.get(i).size(); j++) {
+                retVal[i][j] = arr.get(i).get(j);
+            }
+
+        }
+
+        return retVal;
     }
 
     private static void writeEncodedFile(File file, boolean[][] content) {
@@ -62,7 +83,6 @@ public class Main {
                 }
                 dos.writeByte(-1);
             }
-
             dos.close();
 
 
@@ -123,15 +143,6 @@ public class Main {
         }
 
         return retVal;
-    }
-
-    private static void display(boolean[][] encoded) {
-        for (int i = 0; i < encoded.length; i++) {
-            for (int j = 0; j < encoded[i].length; j++) {
-                System.out.print(encoded[i][j] + " ");
-            }
-            System.out.println();
-        }
     }
 
 }
