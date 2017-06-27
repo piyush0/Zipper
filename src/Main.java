@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Scanner;
@@ -13,8 +14,13 @@ public class Main {
     public static void main(String[] args) {
         Scanner scrn = new Scanner(System.in);
 
+
+        HuffmanCompressor huffmanCompressor = new HuffmanCompressor(readRelativeFile("Source.txt"));
+
+        System.out.println(huffmanCompressor.getEncoder());
+        System.out.println("***********");
+
         FileDetails fileDetails = readFile(scrn);
-        HuffmanCompressor huffmanCompressor = new HuffmanCompressor(fileDetails.fileContents);
         File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
 
         boolean[][] encoded = huffmanCompressor.encode(fileDetails.fileContents);
@@ -125,7 +131,6 @@ public class Main {
         retVal.filePath = fileName;
         try {
             BufferedReader br = new BufferedReader(new java.io.FileReader(fileName));
-
             StringBuilder fileContents = new StringBuilder();
             String currentLine = br.readLine();
 
@@ -145,4 +150,26 @@ public class Main {
         return retVal;
     }
 
+    private static String readRelativeFile(String filename) {
+        try {
+            URL url = Main.class.getResource(filename);
+            File file = new File(url.getPath());
+            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+            StringBuilder fileContents = new StringBuilder();
+            String currentLine = br.readLine();
+
+            while (currentLine != null) {
+                fileContents.append(currentLine).append("\n");
+                currentLine = br.readLine();
+            }
+
+            return fileContents.toString();
+
+        } catch (FileNotFoundException ex) {
+            System.err.println("Invalid Path");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
