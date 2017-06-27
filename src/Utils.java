@@ -5,40 +5,19 @@ import java.util.ArrayList;
  */
 public class Utils {
 
-//    public static void main(String[] args) {
-//        ArrayList<Boolean> arr = new ArrayList<>();
-//        arr.add(false);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(true);
-//        arr.add(false);
-//        ArrayList<Byte> bytes = bool2byteBTR(arr);
-//        System.out.println(byte2boolBTR(bytes));
-//
-//    }
-
-    public static ArrayList<Boolean> byte2boolBTR(ArrayList<Byte> arr) {
+    public static ArrayList<Boolean> bytes2bit(ArrayList<Byte> arr) {
         ArrayList<Boolean> retVal = new ArrayList<>();
 
         for (int i = 0; i < arr.size() - 2; i++) {
             Byte current = arr.get(i);
-            ArrayList<Boolean> currBool = byte2boolhelper(current);
+            ArrayList<Boolean> currBool = byte2bitesHelper(current);
             for (int j = 0; j < currBool.size(); j++) {
                 retVal.add(currBool.get(j));
             }
         }
 
 
-        ArrayList<Boolean> lastBool = byte2boolhelper(arr.get(arr.size() - 2));
+        ArrayList<Boolean> lastBool = byte2bitesHelper(arr.get(arr.size() - 2));
         byte leadingEmptySpots = arr.get(arr.size() - 1);
         for (int i = 0; i < (8-leadingEmptySpots); i++) {
             retVal.add(lastBool.get(i));
@@ -47,8 +26,7 @@ public class Utils {
         return retVal;
     }
 
-
-    public static ArrayList<Byte> bool2byteBTR(ArrayList<Boolean> arr) {
+    public static ArrayList<Byte> bits2bytes(ArrayList<Boolean> arr) {
         ArrayList<Byte> retVal = new ArrayList<>();
 
         for (int i = 0; i <= (arr.size() / 8); i++) {
@@ -57,7 +35,7 @@ public class Utils {
                 current.add(arr.get(i * 8 + j));
             }
 
-            Byte currentByte = bool2bytehelper(current);
+            Byte currentByte = bits2bytesHelper(current);
             retVal.add(currentByte);
         }
 
@@ -69,7 +47,7 @@ public class Utils {
 
     // TODO: Understand the piece of code written below
 
-    public static ArrayList<Boolean> byte2boolhelper(Byte characterbyte) {
+    public static ArrayList<Boolean> byte2bitesHelper(Byte characterbyte) {
         boolean[] array = new boolean[8];
         array[7] = ((characterbyte & 0x80) != 0); //Leftmost
         array[6] = ((characterbyte & 0x40) != 0);
@@ -89,8 +67,7 @@ public class Utils {
         return retVal;
     }
 
-
-    public static byte bool2bytehelper(ArrayList<Boolean> current) {
+    public static byte bits2bytesHelper(ArrayList<Boolean> current) {
         int retVal = 0;
         for (int i = 0; i < current.size(); i++) {
             int bit = 0;

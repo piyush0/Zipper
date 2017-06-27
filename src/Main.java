@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Scanner;
 
 /**
@@ -45,7 +44,7 @@ public class Main {
                 bytes.add(dis.readByte());
             }
 
-            ArrayList<Boolean> retVal = Utils.byte2boolBTR(bytes);
+            ArrayList<Boolean> retVal = Utils.bytes2bit(bytes);
             return retVal;
 
         } catch (FileNotFoundException e) {
@@ -57,25 +56,12 @@ public class Main {
         return null;
     }
 
-    private static boolean[][] arrayToList(ArrayList<ArrayList<Boolean>> arr) {
-        boolean[][] retVal = new boolean[arr.size()][];
-        for (int i = 0; i < arr.size(); i++) {
-            retVal[i] = new boolean[arr.get(i).size()];
-            for (int j = 0; j < arr.get(i).size(); j++) {
-                retVal[i][j] = arr.get(i).get(j);
-            }
-
-        }
-
-        return retVal;
-    }
-
     private static void writeEncodedFile(File file, ArrayList<Boolean> content) {
 
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(file.getAbsoluteFile()));
 
-            ArrayList<Byte> converted = Utils.bool2byteBTR(content);
+            ArrayList<Byte> converted = Utils.bits2bytes(content);
 
             for (int i = 0; i < converted.size(); i++) {
                 dos.writeByte(converted.get(i));

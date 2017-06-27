@@ -4,6 +4,4 @@
 public class FileDetails {
     String fileContents;
     String filePath;
-
-
 }
