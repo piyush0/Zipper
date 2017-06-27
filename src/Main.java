@@ -9,29 +9,42 @@ import java.util.Scanner;
 public class Main {
 
     // /Users/piyush0/Desktop/hello.txt
+    // /Users/piyush0/Desktop/encoded.txt
 
     public static void main(String[] args) {
         Scanner scrn = new Scanner(System.in);
 
-
         HuffmanCompressor huffmanCompressor = new HuffmanCompressor(readRelativeFile("Source.txt"));
-
         System.out.println(huffmanCompressor.getEncoder());
-        System.out.println("***********");
+        System.out.println("0 for encoding/1 for decoding");
+        int choice = scrn.nextInt();
+        scrn.nextLine();
+        if (choice == 0) {
+            System.out.println("Enter the path of the file you want to compress ");
+            String filePath = scrn.nextLine();
+            File file = new File(filePath);
+            String fileContents = readFile(file);
+            File encodedFile = createFileAt(file.getParent(), "encoded");
 
-        FileDetails fileDetails = readFile(scrn);
-        File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
+            ArrayList<Boolean> encoded = null;
+            try {
+                encoded = huffmanCompressor.encode(fileContents);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            writeEncodedFile(encodedFile, encoded);
+        } else {
+            System.out.println("Enter the path of compressed file");
+            String filePath = scrn.nextLine();
+            File file = new File(filePath);
+            ArrayList<Boolean> decoded = readEncodedFile(file);
+            String content = huffmanCompressor.decode(decoded);
+            System.out.println(content);
 
-        ArrayList<Boolean> encoded = null;
-        try {
-            encoded = huffmanCompressor.encode(fileDetails.fileContents);
-        } catch (Exception e) {
-            e.printStackTrace();
+            File decodedFile = createFileAt(file.getParent(), "decoded");
+            writeDecodedFile(decodedFile, content);
+
         }
-        writeEncodedFile(encodedFile, encoded);
-
-        ArrayList<Boolean> decoded = readEncodedFile(encodedFile);
-        System.out.println(huffmanCompressor.decode(decoded));
     }
 
     private static ArrayList<Boolean> readEncodedFile(File file) {
@@ -56,6 +69,16 @@ public class Main {
         return null;
     }
 
+    private static void writeDecodedFile(File file, String content) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+            bw.write(content);
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void writeEncodedFile(File file, ArrayList<Boolean> content) {
 
         try {
@@ -78,22 +101,18 @@ public class Main {
 
     }
 
-    private static String getEncodedFileName(String parentFile) {
-        StringBuilder sb = new StringBuilder(parentFile);
-        sb.append("/Encoded.txt");
-        return sb.toString();
-    }
+    private static File createFileAt(String parent, String relativeName) {
 
-    private static File createFile(String fileName) {
-        File file = new File(fileName);
-        System.out.println(fileName);
+        String path = parent + "/" + relativeName + ".txt";
+        File file = new File(path);
 
         try {
-            if (file.createNewFile()) {
-                return file;
-            } else {
-                System.err.println("Encoded file already present");
+            int i = 1;
+            while (!file.createNewFile()) {
+                file = new File(parent + "/" + relativeName + i + ".txt");
+                i++;
             }
+            return file;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,14 +120,10 @@ public class Main {
         return null;
     }
 
-    private static FileDetails readFile(Scanner scrn) {
-        FileDetails retVal = new FileDetails();
+    private static String readFile(File file) {
 
-        System.out.println("Enter the path of the file you want to zip");
-        String fileName = scrn.nextLine();
-        retVal.filePath = fileName;
         try {
-            BufferedReader br = new BufferedReader(new java.io.FileReader(fileName));
+            BufferedReader br = new BufferedReader(new java.io.FileReader(file));
             StringBuilder fileContents = new StringBuilder();
             String currentLine = br.readLine();
 
@@ -116,8 +131,8 @@ public class Main {
                 fileContents.append(currentLine).append("\n");
                 currentLine = br.readLine();
             }
-            retVal.fileContents = fileContents.toString();
-            return retVal;
+            return fileContents.toString();
+
 
         } catch (FileNotFoundException ex) {
             System.err.println("Invalid Path");
@@ -125,7 +140,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        return retVal;
+        return null;
     }
 
     private static String readRelativeFile(String filename) {
