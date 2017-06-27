@@ -104,19 +104,21 @@ public class HuffmanCompressor {
         return min;
     }
 
-    public boolean[][] encode(String str) {
+    public ArrayList<Boolean> encode(String str) throws Exception {
 
-        boolean[][] retVal = new boolean[str.length()][];
+        ArrayList<Boolean> retVal = new ArrayList<>();
 
         int i = 0;
         for (int u = 0; u < str.length(); u++) {
             char ch = str.charAt(u);
             String val = encoder.get(ch);
 
-            retVal[i] = new boolean[val.length()];
-            for (int j = 0; j < val.length(); j++) {
-
-                retVal[i][j] = val.charAt(j) != '0';
+            if (val != null) {
+                for (int j = 0; j < val.length(); j++) {
+                    retVal.add(val.charAt(j) != '0');
+                }
+            } else {
+                throw new Exception("No encoding present for " + ch);
             }
 
             i++;
@@ -125,25 +127,25 @@ public class HuffmanCompressor {
         return retVal;
     }
 
-    public String decode(boolean[][] arr) {
+    public String decode(ArrayList<Boolean> arr) {
         StringBuilder sb = new StringBuilder();
 
-
-        for (int i = 0; i < arr.length; i++) {
-            boolean[] current = arr[i];
-            StringBuilder curr = new StringBuilder();
-
-            for (int j = 0; j < current.length; j++) {
-                if (current[j]) {
-                    curr.append("1");
-                } else {
-                    curr.append("0");
-                }
+        StringBuilder key = new StringBuilder();
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr.get(i)) {
+                key.append("1");
+            } else {
+                key.append("0");
             }
-            char decodedChar = decoder.get(curr.toString());
-            sb.append(decodedChar);
+
+            if (decoder.containsKey(key.toString())) {
+                sb.append(decoder.get(key.toString()));
+                key = new StringBuilder();
+            }
         }
 
         return sb.toString();
     }
+
+
 }

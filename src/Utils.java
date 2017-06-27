@@ -4,78 +4,102 @@ import java.util.ArrayList;
  * Created by piyush0 on 25/06/17.
  */
 public class Utils {
-    public static void display(byte[] arr) {
-        for (byte b : arr) {
-            System.out.print(b + " ");
-        }
-    }
 
-    public static ArrayList<Boolean> bytes2bites(ArrayList<Byte> bytes) {
+//    public static void main(String[] args) {
+//        ArrayList<Boolean> arr = new ArrayList<>();
+//        arr.add(false);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(true);
+//        arr.add(false);
+//        ArrayList<Byte> bytes = bool2byteBTR(arr);
+//        System.out.println(byte2boolBTR(bytes));
+//
+//    }
+
+    public static ArrayList<Boolean> byte2boolBTR(ArrayList<Byte> arr) {
         ArrayList<Boolean> retVal = new ArrayList<>();
 
-        for (int i = 0; i < bytes.size() - 1; i++) {
-            byte curr = bytes.get(i);
-            while (curr != 0) {
-                int rem = curr % 2;
-                curr = (byte) (curr / 2);
-                if (rem == 1) {
-                    retVal.add(true);
-                } else {
-                    retVal.add(false);
-                }
+        for (int i = 0; i < arr.size() - 2; i++) {
+            Byte current = arr.get(i);
+            ArrayList<Boolean> currBool = byte2boolhelper(current);
+            for (int j = 0; j < currBool.size(); j++) {
+                retVal.add(currBool.get(j));
             }
         }
 
-        for (int i = 0; i < (bytes.get(bytes.size() - 1)); i++) {
-            retVal.add(false);
+
+        ArrayList<Boolean> lastBool = byte2boolhelper(arr.get(arr.size() - 2));
+        byte leadingEmptySpots = arr.get(arr.size() - 1);
+        for (int i = 0; i < (8-leadingEmptySpots); i++) {
+            retVal.add(lastBool.get(i));
         }
-
-
 
         return retVal;
     }
 
 
-    public static byte[] bits2bytes(boolean[] arr) {
+    public static ArrayList<Byte> bool2byteBTR(ArrayList<Boolean> arr) {
+        ArrayList<Byte> retVal = new ArrayList<>();
 
-        byte leadingZeroes = 0;
-        int ei = arr.length - 1;
-        while (ei >= 0 && !arr[ei]) {
-            ei--;
-            leadingZeroes++;
-        }
-
-
-        byte[] retVal = new byte[((arr.length) / 7) + 2];
-        for (int i = 0; i < retVal.length; i++) {
-            boolean[] current = new boolean[7];
-            for (int j = 0; i * 7 + j < arr.length && j < 7; j++) {
-                current[j] = arr[i * 7 + j];
+        for (int i = 0; i <= (arr.size() / 8); i++) {
+            ArrayList<Boolean> current = new ArrayList<>();
+            for (int j = 0; j < 8 && i * 8 + j < arr.size(); j++) {
+                current.add(arr.get(i * 8 + j));
             }
-            retVal[i] = bits2byte(current);
 
+            Byte currentByte = bool2bytehelper(current);
+            retVal.add(currentByte);
         }
 
-        retVal[retVal.length - 1] = leadingZeroes;
+        byte leadingEmptySpots = (byte) (((arr.size() / 8) + 1) * 8 - arr.size());
+        retVal.add(leadingEmptySpots);
+
+        return retVal;
+    }
+
+    // TODO: Understand the piece of code written below
+
+    public static ArrayList<Boolean> byte2boolhelper(Byte characterbyte) {
+        boolean[] array = new boolean[8];
+        array[7] = ((characterbyte & 0x80) != 0); //Leftmost
+        array[6] = ((characterbyte & 0x40) != 0);
+        array[5] = ((characterbyte & 0x20) != 0);
+        array[4] = ((characterbyte & 0x10) != 0);
+        array[3] = ((characterbyte & 0x08) != 0);
+        array[2] = ((characterbyte & 0x04) != 0);
+        array[1] = ((characterbyte & 0x02) != 0);
+        array[0] = ((characterbyte & 0x01) != 0); //Rightmost
+
+        ArrayList<Boolean> retVal = new ArrayList<>();
+
+        for (int i = 0; i < 8; i++) {
+            retVal.add(array[i]);
+        }
+
         return retVal;
     }
 
 
-    private static byte bits2byte(boolean[] arr) {
-
-        byte retVal = 0;
-        int twoPower = 1;
-
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i]) {
-                retVal += twoPower;
+    public static byte bool2bytehelper(ArrayList<Boolean> current) {
+        int retVal = 0;
+        for (int i = 0; i < current.size(); i++) {
+            int bit = 0;
+            if (current.get(i)) {
+                bit = 1;
             }
-            twoPower *= 2;
+            retVal |= bit << i;
         }
-
-        return retVal;
-
+        return (byte) retVal;
     }
-
 
 }

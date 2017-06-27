@@ -23,35 +23,30 @@ public class Main {
         FileDetails fileDetails = readFile(scrn);
         File encodedFile = createFile(getEncodedFileName(new File(fileDetails.filePath).getParent()));
 
-        boolean[][] encoded = huffmanCompressor.encode(fileDetails.fileContents);
+        ArrayList<Boolean> encoded = null;
+        try {
+            encoded = huffmanCompressor.encode(fileDetails.fileContents);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         writeEncodedFile(encodedFile, encoded);
 
-        boolean[][] decoded = readEncodedFile(encodedFile);
+        ArrayList<Boolean> decoded = readEncodedFile(encodedFile);
         System.out.println(huffmanCompressor.decode(decoded));
     }
 
-    private static boolean[][] readEncodedFile(File file) {
+    private static ArrayList<Boolean> readEncodedFile(File file) {
 
         try {
             DataInputStream dis = new DataInputStream(new FileInputStream(file.getAbsoluteFile()));
 
-            ArrayList<ArrayList<Boolean>> retVal = new ArrayList<>();
-
+            ArrayList<Byte> bytes = new ArrayList<>();
             while (dis.available() > 0) {
-
-                ArrayList<Byte> bytes = new ArrayList<>();
-
-                byte current = dis.readByte();
-                while (current != -1) {
-                    bytes.add(current);
-                    current = dis.readByte();
-                }
-
-
-                ArrayList<Boolean> arr = Utils.bytes2bites(bytes);
-                retVal.add(arr);
+                bytes.add(dis.readByte());
             }
-            return arrayToList(retVal);
+
+            ArrayList<Boolean> retVal = Utils.byte2boolBTR(bytes);
+            return retVal;
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -60,7 +55,6 @@ public class Main {
         }
 
         return null;
-
     }
 
     private static boolean[][] arrayToList(ArrayList<ArrayList<Boolean>> arr) {
@@ -76,19 +70,17 @@ public class Main {
         return retVal;
     }
 
-    private static void writeEncodedFile(File file, boolean[][] content) {
+    private static void writeEncodedFile(File file, ArrayList<Boolean> content) {
 
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(file.getAbsoluteFile()));
 
-            for (int i = 0; i < content.length; i++) {
-                boolean[] current = content[i];
-                byte[] converted = Utils.bits2bytes(current);
-                for (int j = 0; j < converted.length; j++) {
-                    dos.writeByte(converted[j]);
-                }
-                dos.writeByte(-1);
+            ArrayList<Byte> converted = Utils.bool2byteBTR(content);
+
+            for (int i = 0; i < converted.size(); i++) {
+                dos.writeByte(converted.get(i));
             }
+
             dos.close();
 
 
